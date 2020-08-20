@@ -3,11 +3,11 @@
 {% load bag_tools %}
 
 {% block page_header %}
-<div class="container header-container">
-	<div class="row">
-		<div class="col"></div>
-	</div>
-</div>
+    <div class="container header-container">
+        <div class="row">
+            <div class="col"></div>
+        </div>
+    </div>
 {% endblock %}
 
 {% block content %}
@@ -16,15 +16,16 @@
         <div class="row">
             <div class="col">
                 <hr>
-                <h2 class="logo-font">Shopping Bag</h2>
+                <h2 class="logo-font mb-4">Shopping Bag</h2>
+                <hr>
             </div>
         </div>
 
-		<div class="row">
-			<div class="col">
+        <div class="row">
+            <div class="col">
                 {% if bag_items %}
                     <div class="table-responsive rounded">
-                        <table class="tabletable-sm table-borderless">
+                        <table class="table table-sm table-borderless">
                             <thead class="text-black">
                                 <tr>
                                     <th scope="col">Product Info</th>
@@ -38,18 +39,22 @@
                             {% for item in bag_items %}
                                 <tr>
                                     <td class="p-3 w-25">
-                                        <img class="img-fluid rounded" src="{{ item.product.image.url }}">
+                                        {% if item.product.image %}
+                                        <img class="img-fluid rounded" src="{{ item.product.image.url }}" alt="{{ item.product.name }}">
+                                        {% else %}
+                                        <img class="img-fluid rounded" src="{{ MEDIA_URL }}noimage.png" alt="{{ item.product.name }}">
+                                        {% endif %}
                                     </td>
                                     <td class="py-3">
                                         <p class="my-0"><strong>{{ item.product.name }}</strong></p>
-										<p class="my-0"><strong>Size: </strong>{% if item.product.has_sizes %}{{ item.size|upper }}{% else %}N/A{% endif %}</p>
+                                        <p class="my-0"><strong>Size: </strong>{% if item.product.has_sizes %}{{ item.size|upper }}{% else %}N/A{% endif %}</p>
                                         <p class="my-0 small text-muted">SKU: {{ item.product.sku|upper }}</p>
                                     </td>
                                     <td class="py-3">
                                         <p class="my-0">${{ item.product.price }}</p>
                                     </td>
                                     <td class="py-3 w-25">
-                                         <form class="form update-form" method="POST" action="{% url 'adjust_bag' item.item_id %}">
+                                        <form class="form update-form" method="POST" action="{% url 'adjust_bag' item.item_id %}">
                                             {% csrf_token %}
                                             <div class="form-group">
                                                 <div class="input-group">
@@ -126,8 +131,8 @@
                         <span class="text-uppercase">Keep Shopping</span>
                     </a>
                 {% endif %}
-			</div>
-		</div>
+            </div>
+        </div>
     </div>
 {% endblock %}
 
@@ -136,7 +141,7 @@
 {% include 'products/includes/quantity_input_script.html' %}
 
 <script type="text/javascript">
-	// Update quantity on click
+    // Update quantity on click
     $('.update-link').click(function(e) {
         var form = $(this).prev('.update-form');
         form.submit();
@@ -156,5 +161,4 @@
          });
     })
 </script>
-
 {% endblock %}
